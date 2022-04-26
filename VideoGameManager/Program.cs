@@ -12,7 +12,6 @@ builder.Services.AddSwaggerGen();
 /// Now the building of the WebHost is done in the multiple steps below,
 /// which is a little more code, but much more readable and also allows us
 /// to omit the Startup.cs (formally know as 'Spaghetti.cs') file
-/// For this course, we won't change anything here!
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
