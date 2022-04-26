@@ -34,17 +34,31 @@ namespace VideoGameManagerDot5
         /// <param name="services"></param>
         public void ConfigureServices(IServiceCollection services)
         {
-            // >>> Register Entity Framework
+            /// Registering services/dependencies
+            /// We use the AddDbContext on the services-object and pass our own context class as the type (which we
+            /// derived from the 'DbContext' inside 'VideoGameDataContext')
+            /// Inside the function 'AddDbContext' we use a lamda-function to create the connection to the sql-server
+            /// with 'UseSqlServer' (could be diffrent for other database-types) and inside the function call,
+            /// we just need to provide the sql-connection string, which we get out of the Configuration interface,
+            /// which just points to appsettings.json
+            // >>> Register Dependencies, eg: Entity Framework
             /// Connection string needs to be defined inside the Configuration-object,
             /// located inside appsettings.json
             ///            "ConnectionStrings": {
-            ///                "DefaultConnection" : "Server=(localDb)\\dev;Database=AddressBook;Trusted_Connection=true"
+            ///                "DefaultConnection" : "Server=(localDb)\\MSSQLLocalDB;Database=AddressBook;Trusted_Connection=true"
             ///  },
+            ///  The "MSSQLLocalDB"-Part needs to be specific to the name of the SQL-Server Instance
+            ///  You can find out which instance name you have by opening a terminal and
+            ///  type the following command 'sqllocaldb i'
+            ///  If the instance is not started automatically, you can start it by
+            ///  typing `sqllocaldb start <instanceName>`
             services.AddDbContext<VideoGameDataContext>(options => 
                 options.UseSqlServer(
                     Configuration["ConnectionStrings:DefaultConnection"]));
 
             services.AddControllers();
+            // This nifty package auto-generates a documentation-site, with which we can call our
+            // API-Endpoints without having to use something like postman
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "VideoGameManagerDot5", Version = "v1" });
@@ -57,7 +71,7 @@ namespace VideoGameManagerDot5
         /// to inject middleware. Middleware is used to change the flow of the incoming http-requests,
         /// for example checking for authorization.
         /// Basically: When you need to add fundamental features, you need in multiple places in your app,
-        ///     that should be added as middleware here...
+        /// where you read or modify the request: that should be added as middleware here...
         /// </summary>
         /// <param name="app"></param>
         /// <param name="env"></param>
