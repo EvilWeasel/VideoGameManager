@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using VideoGameManagerDot5.DataAccess;
 
 namespace VideoGameManagerDot5.Controllers
@@ -22,14 +23,40 @@ namespace VideoGameManagerDot5.Controllers
     public class GameController : ControllerBase
     {
         private readonly VideoGameDataContext context;
+        /// <summary>
+        /// Grab the DataContext defined in Startup.cs using 'Constructor-Injection' inside the parameters,
+        /// and assign the class-local context to the context we get through the dependency-injection
+        /// </summary>
+        /// <param name="context"></param>
         public GameController(VideoGameDataContext context)
         {
             this.context = context;
         }
+        // [HttpGet]
+        // public IEnumerable<Game> GetAllGames()
+        // {
+        //     return context.Games;
+        // }
+
+        // More concise and shorter version of the code above
         [HttpGet]
-        public IEnumerable<Game> GetAllGames()
+        public IEnumerable<Game> GetAllGames() => context.Games;
+
+        /// <summary>
+        /// In this method, we take in a new Game Object from the 'response.body' and use the
+        /// 'context.Add'-Method to add it to the collection.
+        /// We then asynchronously save the changes to the database and return the created game-object.
+        /// When 'awaiting' something, we always need the 'async' keyword inside the function-signature
+        /// and also return a Task of type 'Game' --> Task<Game>
+        /// </summary>
+        /// <param name="newGame"></param>
+        /// <returns></returns>
+        [HttpPost]
+        public async Task<Game> AddGame([FromBody]Game newGame)
         {
-            return context.Games;
+            context.Add(newGame);
+            await context.SaveChangesAsync();
+            return newGame;
         }
     }
 }
