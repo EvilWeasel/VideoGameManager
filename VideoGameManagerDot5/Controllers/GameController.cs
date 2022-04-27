@@ -71,5 +71,23 @@ namespace VideoGameManagerDot5.Controllers
         [HttpGet]
         [Route("{id}")]
         public Game GetGameByID(int id) => context.Games.FirstOrDefault(g => g.ID == id);
+
+        /// <summary>
+        /// In this route, we use the http-delete-method and url-parameter of id, to find a
+        /// specific Game from our database, save it to a variable, remove it from our context,
+        /// sync the context with our database using the 'SaveChangesAsync()'-method and return
+        /// the deleted game to the api-caller
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpDelete]
+        [Route("{id}")]
+        public async Task<Game> DeleteGameByID(int id)
+        {
+            var gameToDelete = context.Games.Find(id);
+            context.Games.Remove(gameToDelete);
+            await context.SaveChangesAsync();
+            return gameToDelete;
+        }
     }
 }

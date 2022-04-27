@@ -56,6 +56,20 @@ namespace VideoGameManagerDot5
                 options.UseSqlServer(
                     Configuration["ConnectionStrings:DefaultConnection"]));
 
+            /// Additionally, when we try to access our API from another domain (like in our angular
+            /// client app, which runs on the same machine, but on another port), it won't work by default.
+            /// This is, because mordern web-browsers have a security-mechanism, named CORS (Cross-Origin-
+            /// Resource-Sharing), which prevents us from accessing our api from another app, without
+            /// opting into using CORS-Features
+            /// For CORS to work, we need to inject it as a dependency, and also integrate it into
+            /// our request-pipeline.
+            /// ! IMPORTANT: This will allow access from any domain, using any method, with any header
+            /// Be more explicit, when coding for a production-environment !
+            // Injecting CORS as a dependency
+            services.AddCors(options => 
+                options.AddDefaultPolicy(builder => 
+                    builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader()));
+
             services.AddControllers();
             // This nifty package auto-generates a documentation-site, with which we can call our
             // API-Endpoints without having to use something like postman
@@ -77,6 +91,10 @@ namespace VideoGameManagerDot5
         /// <param name="env"></param>
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            // Integrating CORS in request-pipeline
+            app.UseCors();
+
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
