@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using VideoGameManagerDot5.DataAccess;
 
@@ -58,5 +59,17 @@ namespace VideoGameManagerDot5.Controllers
             await context.SaveChangesAsync();
             return newGame;
         }
+        /// <summary>
+        /// Here we add another route for getting a individual game from our db-context
+        /// The "{id}" inside the route will be automatically populated from the url-parameters
+        /// eg: http-get comes in with url: "localhost/Game/1"
+        ///     --> Where the param right after "localhost/..." is the controller-route &
+        ///         the parameter right after "Game/..." is the function-route => id
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("{id}")]
+        public Game GetGameByID(int id) => context.Games.FirstOrDefault(g => g.ID == id);
     }
 }

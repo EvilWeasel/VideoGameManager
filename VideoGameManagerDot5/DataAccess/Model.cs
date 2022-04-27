@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace VideoGameManagerDot5.DataAccess
 {
@@ -12,7 +13,10 @@ namespace VideoGameManagerDot5.DataAccess
         [MaxLength(150)]
         [Required]
         public string Name { get; set; } = string.Empty;
-
+        /// We need this, to prevent circular Json-Parsing when using http-post when inserting into db from json
+        /// See below for work-around, alternatively you can just get your post-data from a form, omiting json-parsing
+        /// !IMPORTANT!: use 'JsonIgnore' from 'System.Text.Json.Serialization' (NOT Newtonsoft)
+        [JsonIgnore]
         public List<Game> Games { get; set; }
 
     }
