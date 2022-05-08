@@ -1,0 +1,41 @@
+GET https://localhost:7227/PflegeboxAntrag/
+Content-Type: application/json
+
+###
+
+GET https://localhost:7227/PflegeboxAntrag/1
+Content-Type: application/json
+
+###
+
+POST https://localhost:7227/PflegeboxAntrag/
+Content-Type: application/json
+{
+  "istPrivatVersichert": true,
+  "boxArt": "2",
+  "empfaengerAdresse": {
+    "name": "Max",
+    "nachname": "Mustermann",
+    "strasse": "Musterstrasse",
+    "hausnummer": "1",
+    "plz": "12345",
+    "ort": "Musterort"
+  }
+}
+
+###
+
+PUT https://localhost:7227/PflegeboxAntrag/1
+Content-Type: application/json
+
+{
+  "istPrivatVersichert": false,
+  "versichertenNummer": "A123456789",
+  "krankenkasse": "Musterkasse",
+  "boxArt": "1",
+}
+
+###
+
+DELETE https://localhost:7227/PflegeboxAntrag/1
+Content-Type: application/json
